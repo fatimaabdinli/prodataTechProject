@@ -9,21 +9,33 @@
 /* Begin PBXBuildFile section */
 		B6C055CB2BB6C2DF00DB1C7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C055CA2BB6C2DF00DB1C7F /* AppDelegate.swift */; };
 		B6C055CD2BB6C2DF00DB1C7F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C055CC2BB6C2DF00DB1C7F /* SceneDelegate.swift */; };
-		B6C055CF2BB6C2DF00DB1C7F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C055CE2BB6C2DF00DB1C7F /* ViewController.swift */; };
+		B6C055CF2BB6C2DF00DB1C7F /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C055CE2BB6C2DF00DB1C7F /* ListViewController.swift */; };
 		B6C055D22BB6C2DF00DB1C7F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6C055D02BB6C2DF00DB1C7F /* Main.storyboard */; };
 		B6C055D42BB6C2E100DB1C7F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6C055D32BB6C2E100DB1C7F /* Assets.xcassets */; };
 		B6C055D72BB6C2E100DB1C7F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6C055D52BB6C2E100DB1C7F /* LaunchScreen.storyboard */; };
+		B6C055E52BB6C69F00DB1C7F /* ListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C055E42BB6C69F00DB1C7F /* ListViewModel.swift */; };
+		B6C055E92BB6C6E300DB1C7F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C055E82BB6C6E300DB1C7F /* Extensions.swift */; };
+		B6C055EE2BB6C7CD00DB1C7F /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C055EC2BB6C7CD00DB1C7F /* PhotoCell.swift */; };
+		B6C055EF2BB6C7CD00DB1C7F /* PhotoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6C055ED2BB6C7CD00DB1C7F /* PhotoCell.xib */; };
+		B6C055F22BB7F45200DB1C7F /* AddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C055F12BB7F45200DB1C7F /* AddViewController.swift */; };
+		B6C055F42BB7F46700DB1C7F /* AddViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C055F32BB7F46700DB1C7F /* AddViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B6C055C72BB6C2DF00DB1C7F /* prodataTechProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = prodataTechProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6C055CA2BB6C2DF00DB1C7F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B6C055CC2BB6C2DF00DB1C7F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		B6C055CE2BB6C2DF00DB1C7F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B6C055CE2BB6C2DF00DB1C7F /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		B6C055D12BB6C2DF00DB1C7F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B6C055D32BB6C2E100DB1C7F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B6C055D62BB6C2E100DB1C7F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B6C055D82BB6C2E100DB1C7F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B6C055E42BB6C69F00DB1C7F /* ListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewModel.swift; sourceTree = "<group>"; };
+		B6C055E82BB6C6E300DB1C7F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		B6C055EC2BB6C7CD00DB1C7F /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
+		B6C055ED2BB6C7CD00DB1C7F /* PhotoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoCell.xib; sourceTree = "<group>"; };
+		B6C055F12BB7F45200DB1C7F /* AddViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddViewController.swift; sourceTree = "<group>"; };
+		B6C055F32BB7F46700DB1C7F /* AddViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,13 +70,91 @@
 			children = (
 				B6C055CA2BB6C2DF00DB1C7F /* AppDelegate.swift */,
 				B6C055CC2BB6C2DF00DB1C7F /* SceneDelegate.swift */,
-				B6C055CE2BB6C2DF00DB1C7F /* ViewController.swift */,
-				B6C055D02BB6C2DF00DB1C7F /* Main.storyboard */,
+				B6C055E12BB6C5F800DB1C7F /* Business Layer */,
+				B6C055E62BB6C6C900DB1C7F /* Helper */,
 				B6C055D32BB6C2E100DB1C7F /* Assets.xcassets */,
 				B6C055D52BB6C2E100DB1C7F /* LaunchScreen.storyboard */,
 				B6C055D82BB6C2E100DB1C7F /* Info.plist */,
 			);
 			path = prodataTechProject;
+			sourceTree = "<group>";
+		};
+		B6C055DE2BB6C5D600DB1C7F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B6C055DF2BB6C5DC00DB1C7F /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B6C055EB2BB6C79200DB1C7F /* Storyboards */,
+				B6C055EA2BB6C78400DB1C7F /* Cells */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		B6C055E12BB6C5F800DB1C7F /* Business Layer */ = {
+			isa = PBXGroup;
+			children = (
+				B6C055DE2BB6C5D600DB1C7F /* Model */,
+				B6C055DF2BB6C5DC00DB1C7F /* View */,
+				B6C055E22BB6C64700DB1C7F /* ViewModel */,
+			);
+			path = "Business Layer";
+			sourceTree = "<group>";
+		};
+		B6C055E22BB6C64700DB1C7F /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				B6C055F02BB7F40600DB1C7F /* Add */,
+				B6C055E32BB6C66A00DB1C7F /* List */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B6C055E32BB6C66A00DB1C7F /* List */ = {
+			isa = PBXGroup;
+			children = (
+				B6C055E42BB6C69F00DB1C7F /* ListViewModel.swift */,
+				B6C055CE2BB6C2DF00DB1C7F /* ListViewController.swift */,
+			);
+			path = List;
+			sourceTree = "<group>";
+		};
+		B6C055E62BB6C6C900DB1C7F /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				B6C055E82BB6C6E300DB1C7F /* Extensions.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		B6C055EA2BB6C78400DB1C7F /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				B6C055EC2BB6C7CD00DB1C7F /* PhotoCell.swift */,
+				B6C055ED2BB6C7CD00DB1C7F /* PhotoCell.xib */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		B6C055EB2BB6C79200DB1C7F /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				B6C055D02BB6C2DF00DB1C7F /* Main.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		B6C055F02BB7F40600DB1C7F /* Add */ = {
+			isa = PBXGroup;
+			children = (
+				B6C055F32BB7F46700DB1C7F /* AddViewModel.swift */,
+				B6C055F12BB7F45200DB1C7F /* AddViewController.swift */,
+			);
+			path = Add;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,6 +215,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6C055EF2BB6C7CD00DB1C7F /* PhotoCell.xib in Resources */,
 				B6C055D72BB6C2E100DB1C7F /* LaunchScreen.storyboard in Resources */,
 				B6C055D42BB6C2E100DB1C7F /* Assets.xcassets in Resources */,
 				B6C055D22BB6C2DF00DB1C7F /* Main.storyboard in Resources */,
@@ -138,8 +229,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B6C055CF2BB6C2DF00DB1C7F /* ViewController.swift in Sources */,
+				B6C055E92BB6C6E300DB1C7F /* Extensions.swift in Sources */,
+				B6C055CF2BB6C2DF00DB1C7F /* ListViewController.swift in Sources */,
+				B6C055F42BB7F46700DB1C7F /* AddViewModel.swift in Sources */,
+				B6C055F22BB7F45200DB1C7F /* AddViewController.swift in Sources */,
+				B6C055E52BB6C69F00DB1C7F /* ListViewModel.swift in Sources */,
 				B6C055CB2BB6C2DF00DB1C7F /* AppDelegate.swift in Sources */,
+				B6C055EE2BB6C7CD00DB1C7F /* PhotoCell.swift in Sources */,
 				B6C055CD2BB6C2DF00DB1C7F /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
