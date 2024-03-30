@@ -391,6 +391,7 @@
 				DEVELOPMENT_TEAM = 3TT7UPH6YN;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = prodataTechProject/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please give access to camera";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -419,6 +420,7 @@
 				DEVELOPMENT_TEAM = 3TT7UPH6YN;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = prodataTechProject/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please give access to camera";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
