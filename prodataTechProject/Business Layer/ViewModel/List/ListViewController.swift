@@ -10,13 +10,13 @@ import UIKit
 class ListViewController: UIViewController {
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var headerLabel: UILabel!
-    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var addButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTarget()
-        collectionView.registerNib(with: "PhotoCell")
+        tableView.registerNib(with: "PhotoCell")
     }
     
     fileprivate func setupTarget() {
@@ -30,20 +30,35 @@ class ListViewController: UIViewController {
                present(vc, animated: true)
              
     }
+    
+    
 }
 
-extension ListViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        3
+extension ListViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        5
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeCell(cellClass: PhotoCell.self, indexPath: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeCell(cellClass: PhotoCell.self, indexPath: indexPath)
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: collectionView.frame.height * 0.15)
-    }
+    func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+            let delete = UIContextualAction(
+                style: .destructive,
+                title: "Delete") { action, view, completionHandler in
+//                    delete action
+//                    self.deleteObject(index: indexPath.row)
+                    
+                }
+            let edit = UIContextualAction(
+                style: .normal,
+                title: "Edit") { action, view, completionHandler in
+//                    edit description action
+                }
+            return UISwipeActionsConfiguration(actions: [delete, edit])
+        }
 }
