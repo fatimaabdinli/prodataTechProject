@@ -9,6 +9,8 @@ import UIKit
 import Photos
 import PhotosUI
 import AVFoundation
+import FirebaseStorage
+import FirebaseFirestore
 
 class AddViewController: UIViewController {
     @IBOutlet weak var addPhotoLabel: UILabel!
@@ -18,7 +20,8 @@ class AddViewController: UIViewController {
     @IBOutlet weak var addDescripTextField: UITextField!
     @IBOutlet weak var saveButton: UIButton!
     let imagePickerController = UIImagePickerController()
-    
+    internal var imageName: String?
+    var saveCb: (() -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,11 +44,39 @@ class AddViewController: UIViewController {
     
     fileprivate func setupTarget() {
         addPhotoButton.addTarget(self, action: #selector(addPhotoButtonAction), for: .touchUpInside)
+        saveButton.addTarget(self, action: #selector(saveButtonAction), for: .touchUpInside)
     }
     
     @objc func addPhotoButtonAction() {
         showActionSheet()
 //        checkPhotoLibraryPermission()
+    }
+    
+    @objc func saveButtonAction() {
+        saveButton.isEnabled = false
+        
+        do {
+            if (self.imageName != nil && photoImage != nil && !(addDescripTextField.text ?? "").isEmpty) {
+                let storageReference = Storage.storage().reference().child(self.imageName!)
+                let imageData = self.photoImage!.image?.jpegData(compressionQuality: 0.8)
+                guard let imageData = imageData else {return}
+                let uploadTask = storageReference.putData(imageData, completion: { (storageMetaData, error) in
+                    if let error = error {
+                        return
+                    }
+                    
+                    guard let storageMetaData = storageMetaData else {return}
+                    
+                    let db = Firestore.firestore()
+                    db.collection("imageItems").document().setData(["imageName": storageMetaData.path, "description": self.addDescripTextField.text])
+                    self.saveCb?()
+                    self.dismiss(animated: true)
+                })
+            }
+            
+          } catch {
+            print("Error on extracting data from url: \(error.localizedDescription)")
+          }
     }
     
     fileprivate func showActionSheet() {
@@ -183,10 +214,13 @@ extension AddViewController: PHPickerViewControllerDelegate, UIImagePickerContro
                 guard let image = reading as? UIImage, error == nil else { return }
                 DispatchQueue.main.async {
                     self.photoImage.image = image
+                    self.addPhotoButton.isHidden = true
                 }
-//                result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.image") { [weak self] url, _ in
-//                    // TODO: - Here You Get The URL
-//                }
+                result.itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier, completionHandler: {(url, error) in
+                    DispatchQueue.main.async {
+                        self.imageName = "\(result.itemProvider.suggestedName ?? "").\(url?.pathExtension ?? "")"
+                    }
+                })
             }
         }
     }
