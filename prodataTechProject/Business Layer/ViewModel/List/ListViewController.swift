@@ -7,6 +7,7 @@
 
 import UIKit
 import RealmSwift
+import MessageUI
 
 class ListViewController: UIViewController {
     @IBOutlet weak var headerView: UIView!
@@ -52,9 +53,23 @@ class ListViewController: UIViewController {
             reloadTable()
         }
     }
-}
+    
+    fileprivate func sendEmail(_ description: String, _ data: Data) {
+                let messageBody = description
+               
+                if MFMailComposeViewController.canSendMail() {
+                    let mail = MFMailComposeViewController()
+                    mail.mailComposeDelegate = self
+                    mail.setMessageBody(messageBody, isHTML: true)
+                    mail.addAttachmentData(data, mimeType: "image/jpeg", fileName: "attachment")
+                    present(mail, animated: true)
+                } else {
+                    print("You can handle the method if your device cannot send Email")
+                }
+            }
+    }
 
-extension ListViewController: UITableViewDelegate, UITableViewDataSource {
+extension ListViewController: UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.getCount() ?? 0
     }
@@ -76,38 +91,54 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100.0
     }
-        
-        func tableView(
-            _ tableView: UITableView,
-            trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-                let delete = UIContextualAction(
-                    style: .destructive,
-                    title: "Delete") { action, view, completionHandler in
-                        self.viewModel.deleteItem(row: indexPath.row)
+    
+    func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+            let delete = UIContextualAction(
+                style: .destructive,
+                title: "Delete") { action, view, completionHandler in
+                    self.viewModel.deleteItem(row: indexPath.row)
+                }
+            
+            let send = UIContextualAction(
+                style: .normal,
+                title: "Send") { action, view, completionHandler in
+                    let item = self.viewModel.getList()[indexPath.row]
+                    self.sendEmail(item.desc, Data(base64Encoded: item.imageData)!)
+                }
+            
+            let edit = UIContextualAction(
+                style: .normal,
+                title: "Edit") { action, view, completionHandler in
+                    let vc = self.storyboard?.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
+                    vc.modalPresentationStyle = .formSheet
+                    vc.currentRow = indexPath.row
+                    var currentItem = self.viewModel.getList()[indexPath.row]
+                    vc.defaultDesc = currentItem.desc
+                    vc.updateCallback = { [weak self] (row, desc) in
+                        self?.viewModel.editDesc(row: row, desc: desc)
                     }
-                
-                let send = UIContextualAction(
-                    style: .normal,
-                    title: "Send") { action, view, completionHandler in
-                        
-                        //                    send description action
-                    }
-                
-                let edit = UIContextualAction(
-                    style: .normal,
-                    title: "Edit") { action, view, completionHandler in
-                        let vc = self.storyboard?.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
-                        vc.modalPresentationStyle = .formSheet
-                        vc.currentRow = indexPath.row
-                        var currentItem = self.viewModel.getList()[indexPath.row]
-                        vc.defaultDesc = currentItem.desc
-                        vc.updateCallback = { [weak self] (row, desc) in
-                            self?.viewModel.editDesc(row: row, desc: desc)
-                        }
-                        self.present(vc, animated: true)
-                    }
-                
-                return UISwipeActionsConfiguration(actions: [delete, send, edit])
-            }
+                    self.present(vc, animated: true)
+                }
+            
+            return UISwipeActionsConfiguration(actions: [delete, send, edit])
+        }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        switch result {
+        case .cancelled:
+            print("Cancelled case")
+        case .saved:
+            print("Saved case")
+        case .failed:
+            print("Failed case")
+        case .sent:
+            print("Sent case")
+        default:
+            break
+        }
+        controller.dismiss(animated: true)
     }
+}
 
