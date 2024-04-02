@@ -6,21 +6,21 @@
 //
 
 import UIKit
-import FirebaseStorage
-import FirebaseFirestore
+import RealmSwift
 
 class ListViewController: UIViewController {
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var headerLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var addButton: UIButton!
-
-    var imageItems: [[String: String]] = []
+    var viewModel = ListViewModel()
+    let realm = RealmHelper.instance.realm
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTarget()
-        getImageItems()
+        configureVM()
+        viewModel.getImageItems()
         tableView.registerNib(with: "PhotoCell")
     }
     
@@ -31,47 +31,41 @@ class ListViewController: UIViewController {
     @objc func addButtonAction() {
         print(#function)
         let vc = storyboard?.instantiateViewController(withIdentifier: "AddViewController") as! AddViewController
-        vc.saveCb = getImageItems
+        vc.saveCb = { [weak self] in
+            guard let self = self else {return}
+            viewModel.getImageItems()
+        }
         vc.modalPresentationStyle = .formSheet
                present(vc, animated: true)
     }
-    
-    fileprivate func getImageItems() {
-        self.imageItems.removeAll()
+    fileprivate func reloadTable() {
         self.tableView.reloadData()
-        
-        let db = Firestore.firestore()
-        db.collection("imageItems").getDocuments(completion: { (snapshot, error) in
-            guard let snapshot = snapshot else {return}
-            print(snapshot.documents)
-//            for doc in snapshot.documents {
-//                self.imageItems.append(["imageName": doc["imageName"] as! String, "description": doc["description"] as! String])
-//            }
-//            self.tableView.reloadData()
-        })
+    }
+    
+    fileprivate func configureVM() {
+        viewModel.successCallback = { [weak self] in
+            guard let self = self else {return}
+            reloadTable()
+        }
     }
 }
 
 extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        imageItems.count
+        viewModel.getCount() ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeCell(cellClass: PhotoCell.self, indexPath: indexPath)
+        let imageItems = viewModel.getList()
         let item = imageItems[indexPath.row]
-        cell.descriptionLabel.text = item["description"]
-        cell.imageName = item["imageName"]
-        
-        let storageRef = Storage.storage().reference()
-        let file = storageRef.child(item["imageName"] as! String)
-        file.getData(maxSize: 10 * 1024 * 1024, completion: { [weak self] (data, error) in
-            guard let data = data else {return}
-            
-            let image = UIImage(data: data)
-            cell.photo.image = image
-            cell.descriptionLabel.text = item["description"]
-        })
+    
+        cell.descriptionLabel.text = item.desc
+        let data = Data(base64Encoded: item.imageData)
+        guard let data = data else {return cell}
+        let image = UIImage(data: data)
+        cell.photo.image = image
+
         return cell
     }
     
@@ -81,8 +75,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
             let delete = UIContextualAction(
                 style: .destructive,
                 title: "Delete") { action, view, completionHandler in
-//                    delete action
-//                    self.deleteObject(index: indexPath.row)
+                    self.viewModel.deleteItem(row: indexPath.row)
                 }
             
             let send = UIContextualAction(
