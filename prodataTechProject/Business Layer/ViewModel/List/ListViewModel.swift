@@ -36,5 +36,13 @@ class ListViewModel {
             }
         }
     }
+    
+    func editDesc(row: Int, desc: String) {
+        let item = imageList![row]
+        try! realm.write {
+            item.desc = desc
+        }
+        getImageItems()
+    }
 }
 
