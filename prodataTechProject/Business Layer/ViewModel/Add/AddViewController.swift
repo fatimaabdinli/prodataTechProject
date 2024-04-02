@@ -9,8 +9,7 @@ import UIKit
 import Photos
 import PhotosUI
 import AVFoundation
-import FirebaseStorage
-import FirebaseFirestore
+import RealmSwift
 
 class AddViewController: UIViewController {
     @IBOutlet weak var addPhotoLabel: UILabel!
@@ -22,12 +21,16 @@ class AddViewController: UIViewController {
     let imagePickerController = UIImagePickerController()
     internal var imageName: String?
     var saveCb: (() -> Void)?
+
+    let viewModel = AddViewModel()
+    let realm = RealmHelper.instance.realm
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTarget()
         setupView()
         imagePickerController.delegate = self
+        print(realm.configuration.fileURL)
     }
     
     fileprivate func setupView() {
@@ -53,30 +56,10 @@ class AddViewController: UIViewController {
     }
     
     @objc func saveButtonAction() {
-        saveButton.isEnabled = false
-        
-        do {
-            if (self.imageName != nil && photoImage != nil && !(addDescripTextField.text ?? "").isEmpty) {
-                let storageReference = Storage.storage().reference().child(self.imageName!)
-                let imageData = self.photoImage!.image?.jpegData(compressionQuality: 0.8)
-                guard let imageData = imageData else {return}
-                let uploadTask = storageReference.putData(imageData, completion: { (storageMetaData, error) in
-                    if let error = error {
-                        return
-                    }
-                    
-                    guard let storageMetaData = storageMetaData else {return}
-                    
-                    let db = Firestore.firestore()
-                    db.collection("imageItems").document().setData(["imageName": storageMetaData.path, "description": self.addDescripTextField.text])
-                    self.saveCb?()
-                    self.dismiss(animated: true)
-                })
-            }
-            
-          } catch {
-            print("Error on extracting data from url: \(error.localizedDescription)")
-          }
+        guard let image = photoImage.image, let desc = addDescripTextField.text else {return}
+        viewModel.saveObjectToRealm(image: image, desc: desc)
+        saveCb?()
+        self.dismiss(animated: true)
     }
     
     fileprivate func showActionSheet() {
@@ -132,44 +115,6 @@ class AddViewController: UIViewController {
             completion: nil)
     }
     
-//    public func checkForPermissions() {
-//         
-//           switch AVCaptureDevice.authorizationStatus(for: .video) {
-//           case .authorized:
-//               // The user has previously granted access to the camera.
-//               break
-//           case .notDetermined:
-//               /*
-//                The user has not yet been presented with the option to grant
-//                video access. Suspend the session queue to delay session
-//                setup until the access request has completed.
-//                */
-//               sessionQueue.suspend()
-//               AVCaptureDevice.requestAccess(for: .video, completionHandler: { granted in
-//                   if !granted {
-//                       self.setupResult = .notAuthorized
-//                   }
-//                   self.sessionQueue.resume()
-//               })
-//               
-//           default:
-//               // The user has previously denied access.
-//               // Store this result, create an alert error and tell the UI to show it.
-//               setupResult = .notAuthorized
-//               
-//               DispatchQueue.main.async {
-//                   self.alertError = AlertError(title: "Camera Access", message: "SwiftCamera doesn't have access to use your camera, please update your privacy settings.", primaryButtonTitle: "Settings", secondaryButtonTitle: nil, primaryAction: {
-//                           UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!,
-//                                                     options: [:], completionHandler: nil)
-//                       
-//                   }, secondaryAction: nil)
-//                   self.shouldShowAlertView = true
-//                   self.isCameraUnavailable = true
-//                   self.isCameraButtonDisabled = true
-//               }
-//           }
-//       }
-    
     func checkPhotoLibraryPermission() {
         switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
         case .notDetermined:
@@ -210,18 +155,19 @@ extension AddViewController: PHPickerViewControllerDelegate, UIImagePickerContro
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: .none)
         results.forEach { result in
+//            result.itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier, completionHandler: { (url, error) in
+//                print(url?.lastPathComponent)
+//                
+//            })
             result.itemProvider.loadObject(ofClass: UIImage.self) { reading, error in
                 guard let image = reading as? UIImage, error == nil else { return }
                 DispatchQueue.main.async {
                     self.photoImage.image = image
+                    print(image.jpegData(compressionQuality: 0.8))
                     self.addPhotoButton.isHidden = true
                 }
-                result.itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier, completionHandler: {(url, error) in
-                    DispatchQueue.main.async {
-                        self.imageName = "\(result.itemProvider.suggestedName ?? "").\(url?.pathExtension ?? "")"
-                    }
-                })
             }
         }
     }
 }
+

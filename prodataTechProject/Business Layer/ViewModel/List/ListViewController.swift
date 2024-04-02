@@ -6,24 +6,29 @@
 //
 
 import UIKit
-import FirebaseStorage
-import FirebaseFirestore
+import RealmSwift
+import MessageUI
 
 class ListViewController: UIViewController {
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var headerLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var addButton: UIButton!
-
-    var imageItems: [[String: String]] = []
+    var viewModel = ListViewModel()
+    let realm = RealmHelper.instance.realm
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupView()
         setupTarget()
-        getImageItems()
+        configureVM()
+        viewModel.getImageItems()
         tableView.registerNib(with: "PhotoCell")
     }
     
+    fileprivate func setupView() {
+        addButton.layer.cornerRadius = 8
+    }
     fileprivate func setupTarget() {
         addButton.addTarget(self, action: #selector(addButtonAction), for: .touchUpInside)
     }
@@ -31,48 +36,60 @@ class ListViewController: UIViewController {
     @objc func addButtonAction() {
         print(#function)
         let vc = storyboard?.instantiateViewController(withIdentifier: "AddViewController") as! AddViewController
-        vc.saveCb = getImageItems
+        vc.saveCb = { [weak self] in
+            guard let self = self else {return}
+            viewModel.getImageItems()
+        }
         vc.modalPresentationStyle = .formSheet
                present(vc, animated: true)
     }
-    
-    fileprivate func getImageItems() {
-        self.imageItems.removeAll()
+    fileprivate func reloadTable() {
         self.tableView.reloadData()
-        
-        let db = Firestore.firestore()
-        db.collection("imageItems").getDocuments(completion: { (snapshot, error) in
-            guard let snapshot = snapshot else {return}
-            print(snapshot.documents)
-//            for doc in snapshot.documents {
-//                self.imageItems.append(["imageName": doc["imageName"] as! String, "description": doc["description"] as! String])
-//            }
-//            self.tableView.reloadData()
-        })
     }
-}
+    
+    fileprivate func configureVM() {
+        viewModel.successCallback = { [weak self] in
+            guard let self = self else {return}
+            reloadTable()
+        }
+    }
+    
+    fileprivate func sendEmail(_ description: String, _ data: Data) {
+                let messageBody = description
+               
+                if MFMailComposeViewController.canSendMail() {
+                    let mail = MFMailComposeViewController()
+                    mail.mailComposeDelegate = self
+                    mail.setMessageBody(messageBody, isHTML: true)
+                    mail.addAttachmentData(data, mimeType: "image/jpeg", fileName: "attachment")
+                    present(mail, animated: true)
+                } else {
+                    print("You can handle the method if your device cannot send Email")
+                }
+            }
+    }
 
-extension ListViewController: UITableViewDelegate, UITableViewDataSource {
+extension ListViewController: UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        imageItems.count
+        viewModel.getCount() ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeCell(cellClass: PhotoCell.self, indexPath: indexPath)
+        let imageItems = viewModel.getList()
         let item = imageItems[indexPath.row]
-        cell.descriptionLabel.text = item["description"]
-        cell.imageName = item["imageName"]
         
-        let storageRef = Storage.storage().reference()
-        let file = storageRef.child(item["imageName"] as! String)
-        file.getData(maxSize: 10 * 1024 * 1024, completion: { [weak self] (data, error) in
-            guard let data = data else {return}
-            
-            let image = UIImage(data: data)
-            cell.photo.image = image
-            cell.descriptionLabel.text = item["description"]
-        })
+        cell.descriptionLabel.text = item.desc
+        let data = Data(base64Encoded: item.imageData)
+        guard let data = data else {return cell}
+        let image = UIImage(data: data)
+        cell.photo.image = image
+        
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100.0
     }
     
     func tableView(
@@ -81,22 +98,47 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
             let delete = UIContextualAction(
                 style: .destructive,
                 title: "Delete") { action, view, completionHandler in
-//                    delete action
-//                    self.deleteObject(index: indexPath.row)
+                    self.viewModel.deleteItem(row: indexPath.row)
                 }
             
             let send = UIContextualAction(
                 style: .normal,
                 title: "Send") { action, view, completionHandler in
-//                    edit description action
+                    let item = self.viewModel.getList()[indexPath.row]
+                    self.sendEmail(item.desc, Data(base64Encoded: item.imageData)!)
                 }
             
             let edit = UIContextualAction(
                 style: .normal,
                 title: "Edit") { action, view, completionHandler in
-//                    send description action
+                    let vc = self.storyboard?.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
+                    vc.modalPresentationStyle = .formSheet
+                    vc.currentRow = indexPath.row
+                    var currentItem = self.viewModel.getList()[indexPath.row]
+                    vc.defaultDesc = currentItem.desc
+                    vc.updateCallback = { [weak self] (row, desc) in
+                        self?.viewModel.editDesc(row: row, desc: desc)
+                    }
+                    self.present(vc, animated: true)
                 }
             
             return UISwipeActionsConfiguration(actions: [delete, send, edit])
         }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        switch result {
+        case .cancelled:
+            print("Cancelled case")
+        case .saved:
+            print("Saved case")
+        case .failed:
+            print("Failed case")
+        case .sent:
+            print("Sent case")
+        default:
+            break
+        }
+        controller.dismiss(animated: true)
+    }
 }
+
