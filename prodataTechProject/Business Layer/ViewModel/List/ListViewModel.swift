@@ -31,7 +31,7 @@ class ListViewModel {
         if (!imageList!.isEmpty) {
             let currentImage = imageList![row]
             try! realm.write {
-                realm.delete(currentImage ?? ImageItem())
+                realm.delete(currentImage)
                 self.getImageItems()
             }
         }

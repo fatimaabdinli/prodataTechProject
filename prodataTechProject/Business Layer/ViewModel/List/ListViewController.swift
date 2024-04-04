@@ -23,12 +23,14 @@ class ListViewController: UIViewController {
         setupTarget()
         configureVM()
         viewModel.getImageItems()
-        tableView.registerNib(with: "PhotoCell")
     }
     
     fileprivate func setupView() {
+        tableView.registerNib(with: "PhotoCell")
         addButton.layer.cornerRadius = 8
+        tableView.allowsSelection = false
     }
+    
     fileprivate func setupTarget() {
         addButton.addTarget(self, action: #selector(addButtonAction), for: .touchUpInside)
     }
@@ -54,7 +56,7 @@ class ListViewController: UIViewController {
         }
     }
     
-    fileprivate func sendEmail(_ description: String, _ data: Data) {
+    fileprivate func sendByEmail(_ description: String, _ data: Data) {
                 let messageBody = description
                
                 if MFMailComposeViewController.canSendMail() {
@@ -71,7 +73,7 @@ class ListViewController: UIViewController {
 
 extension ListViewController: UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.getCount() ?? 0
+        viewModel.getCount() 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -105,7 +107,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, MFMail
                 style: .normal,
                 title: "Send") { action, view, completionHandler in
                     let item = self.viewModel.getList()[indexPath.row]
-                    self.sendEmail(item.desc, Data(base64Encoded: item.imageData)!)
+                    self.sendByEmail(item.desc, Data(base64Encoded: item.imageData)!)
                 }
             
             let edit = UIContextualAction(
@@ -114,7 +116,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, MFMail
                     let vc = self.storyboard?.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
                     vc.modalPresentationStyle = .formSheet
                     vc.currentRow = indexPath.row
-                    var currentItem = self.viewModel.getList()[indexPath.row]
+                    let currentItem = self.viewModel.getList()[indexPath.row]
                     vc.defaultDesc = currentItem.desc
                     vc.updateCallback = { [weak self] (row, desc) in
                         self?.viewModel.editDesc(row: row, desc: desc)
