@@ -71,7 +71,7 @@ class ListViewController: UIViewController {
             }
     }
 
-extension ListViewController: UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
+extension ListViewController: UITableViewDelegate, UITableViewDataSource,  MFMailComposeViewControllerDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.getCount() 
     }
@@ -91,7 +91,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, MFMail
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100.0
+        return tableView.frame.height / 7
     }
     
     func tableView(
