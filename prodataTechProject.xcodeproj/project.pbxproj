@@ -40,7 +40,6 @@
 		B6C055E92BB6C6E300DB1C7F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C055E82BB6C6E300DB1C7F /* Extensions.swift */; };
 		B6C055F22BB7F45200DB1C7F /* AddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C055F12BB7F45200DB1C7F /* AddViewController.swift */; };
 		B6C055F42BB7F46700DB1C7F /* AddViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C055F32BB7F46700DB1C7F /* AddViewModel.swift */; };
-		B6C055F92BB92E7900DB1C7F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B6C055F82BB92E7900DB1C7F /* GoogleService-Info.plist */; };
 		B6C056072BB9575B00DB1C7F /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C056052BB9575B00DB1C7F /* PhotoCell.swift */; };
 		B6C056082BB9575B00DB1C7F /* PhotoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6C056062BB9575B00DB1C7F /* PhotoCell.xib */; };
 /* End PBXBuildFile section */
@@ -79,7 +78,6 @@
 		B6C055E82BB6C6E300DB1C7F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		B6C055F12BB7F45200DB1C7F /* AddViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddViewController.swift; sourceTree = "<group>"; };
 		B6C055F32BB7F46700DB1C7F /* AddViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddViewModel.swift; sourceTree = "<group>"; };
-		B6C055F82BB92E7900DB1C7F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B6C056052BB9575B00DB1C7F /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 		B6C056062BB9575B00DB1C7F /* PhotoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -127,7 +125,6 @@
 			children = (
 				B6C055C92BB6C2DF00DB1C7F /* prodataTechProject */,
 				B6C055C82BB6C2DF00DB1C7F /* Products */,
-				B6C056092BB9ECED00DB1C7F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -149,7 +146,6 @@
 				B6C055D32BB6C2E100DB1C7F /* Assets.xcassets */,
 				B6C055D52BB6C2E100DB1C7F /* LaunchScreen.storyboard */,
 				B6C055D82BB6C2E100DB1C7F /* Info.plist */,
-				B6C055F82BB92E7900DB1C7F /* GoogleService-Info.plist */,
 			);
 			path = prodataTechProject;
 			sourceTree = "<group>";
@@ -236,13 +232,6 @@
 			path = Add;
 			sourceTree = "<group>";
 		};
-		B6C056092BB9ECED00DB1C7F /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -318,7 +307,6 @@
 				B68DA1242BBCA46E002A9358 /* Montserrat-BlackItalic.ttf in Resources */,
 				B68DA1142BBCA46E002A9358 /* Montserrat-Regular.ttf in Resources */,
 				B68DA1152BBCA46E002A9358 /* Montserrat-Italic.ttf in Resources */,
-				B6C055F92BB92E7900DB1C7F /* GoogleService-Info.plist in Resources */,
 				B6C055D42BB6C2E100DB1C7F /* Assets.xcassets in Resources */,
 				B68DA1212BBCA46E002A9358 /* Montserrat-MediumItalic.ttf in Resources */,
 				B68DA11B2BBCA46E002A9358 /* Montserrat-ThinItalic.ttf in Resources */,

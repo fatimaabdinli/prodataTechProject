@@ -35,5 +35,4 @@ class EditViewController: UIViewController {
         updateCallback?(currentRow ?? 0, updateTextField.text ?? "")
         self.dismiss(animated: true)
     }
-    
 }

@@ -21,7 +21,7 @@ class AddViewController: UIViewController {
     let imagePickerController = UIImagePickerController()
     internal var imageName: String?
     var saveCb: (() -> Void)?
-
+    
     let viewModel = AddViewModel()
     let realm = RealmHelper.instance.realm
     
@@ -30,7 +30,7 @@ class AddViewController: UIViewController {
         setupTarget()
         setupView()
         imagePickerController.delegate = self
-        print(realm.configuration.fileURL)
+        print(realm.configuration.fileURL!)
     }
     
     fileprivate func setupView() {
@@ -65,7 +65,8 @@ class AddViewController: UIViewController {
     fileprivate func showActionSheet() {
         let actionSheet = UIAlertController(title: "Photo source", message: "Choose photo source", preferredStyle: .actionSheet)
         
-        actionSheet.addAction(UIAlertAction(title: "Take photo on camera", style: .default, handler: { (action: UIAlertAction) in
+        actionSheet.addAction(UIAlertAction(title: "Take photo on camera", style: .default, handler: { [weak self] (action: UIAlertAction) in
+            guard let self = self else {return}
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 self.imagePickerController.sourceType = .camera
                 self.present(self.imagePickerController, animated: true, completion: nil)
@@ -74,7 +75,8 @@ class AddViewController: UIViewController {
             }
         }))
         
-        actionSheet.addAction(UIAlertAction(title: "Choose photo from photo library", style: .default, handler: { (action: UIAlertAction) in
+        actionSheet.addAction(UIAlertAction(title: "Choose photo from photo library", style: .default, handler: { [weak self] (action: UIAlertAction) in
+            guard let self = self else {return}
             self.checkPhotoLibraryPermission()
         }))
         
@@ -115,59 +117,88 @@ class AddViewController: UIViewController {
             completion: nil)
     }
     
+    fileprivate func requestAuthorizationPhoto() {
+        PHPhotoLibrary.requestAuthorization({
+            [weak self ] (newStatus) in
+            guard self != nil else {return}
+            print("status is \(newStatus)")
+        })
+        
+    }
+    
     func checkPhotoLibraryPermission() {
         switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
         case .notDetermined:
-            PHPhotoLibrary.requestAuthorization({
-                (newStatus) in
-                print("status is \(newStatus)")
-                if newStatus ==  PHAuthorizationStatus.authorized {
-                    self.openPHPicker()
-                    print("success")
-                }
-            })
+            requestAuthorizationPhoto()
             // no access to photo library
+            break
         case .restricted, .denied:
-            noLibraryAccess()
+            openSettings()
             // access to all photos of library
+            break
         case .authorized:
-            self.openPHPicker()
+            openPHPicker()
             // access to selected photos of library
         case .limited:
-            self.openPHPicker()
+            openPHPicker()
         @unknown default:
             print(#function)
         }
     }
-
+    
     func openPHPicker() {
         var phPickerConfig = PHPickerConfiguration(photoLibrary: .shared())
-        phPickerConfig.selectionLimit = 1
         phPickerConfig.filter = PHPickerFilter.any(of: [.images, .livePhotos])
         let phPickerVC = PHPickerViewController(configuration: phPickerConfig)
         phPickerVC.delegate = self
         present(phPickerVC, animated: true)
     }
+    
+    fileprivate func openSettings() {
+        let alert = UIAlertController(title: "Location access required to get your current location", message: "Please allow location access", preferredStyle: .alert)
+        let settingsAction = UIAlertAction(title: "Settings", style: .default, handler: { [weak self] action in
+            guard self != nil else {return}
+            
+            // open Settings to allow access to library
+            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+        })
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+        
+        alert.addAction(settingsAction)
+        alert.addAction(cancelAction)
+        
+        alert.preferredAction = settingsAction
+        
+        self.present(alert, animated: true, completion: nil)
+    }
 }
+
 
 // PHPicker extension
 extension AddViewController: PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: .none)
-        results.forEach { result in
-//            result.itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.image.identifier, completionHandler: { (url, error) in
-//                print(url?.lastPathComponent)
-//                
-//            })
-            result.itemProvider.loadObject(ofClass: UIImage.self) { reading, error in
+        results.forEach { [weak self] result in
+            guard let self = self else {return}
+
+            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
+                guard let self = self else {return}
                 guard let image = reading as? UIImage, error == nil else { return }
                 DispatchQueue.main.async {
                     self.photoImage.image = image
-                    print(image.jpegData(compressionQuality: 0.8))
                     self.addPhotoButton.isHidden = true
                 }
             }
         }
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let editedImage = info[.originalImage] as? UIImage {
+            self.photoImage.image = editedImage
+            self.addPhotoButton.isHidden = true
+        }
+        picker.dismiss(animated: true, completion: nil)
     }
 }
 

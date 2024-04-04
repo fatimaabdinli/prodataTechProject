@@ -7,19 +7,12 @@
 
 import UIKit
 
-
-protocol ImageProtocol {
-    var name: String {get}
-    var image: UIImage {get}
-}
-
 class PhotoCell: UITableViewCell {
     @IBOutlet weak var photo: UIImageView!
     @IBOutlet weak var descriptionLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
- 
     }
 }
 

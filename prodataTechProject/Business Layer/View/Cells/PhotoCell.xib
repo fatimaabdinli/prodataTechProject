@@ -3,6 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -24,21 +25,31 @@
                             <constraint firstAttribute="height" constant="120" id="hnY-au-G45"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vZY-5U-pDh">
-                        <rect key="frame" x="156" y="88.666666666666671" width="42" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="wordWrap" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vZY-5U-pDh">
+                        <rect key="frame" x="156" y="59" width="357" height="80"/>
+                        <color key="backgroundColor" name="Background"/>
+                        <color key="tintColor" name="Text"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="80" id="iHx-I1-uye"/>
+                        </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
+                        <color key="highlightedColor" name="Background"/>
                     </label>
                 </subviews>
+                <color key="backgroundColor" name="Background"/>
+                <color key="tintColor" name="Text"/>
                 <constraints>
                     <constraint firstItem="bnv-4Y-MwR" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="B04-b1-Na6"/>
+                    <constraint firstAttribute="trailing" secondItem="vZY-5U-pDh" secondAttribute="trailing" constant="12" id="DZY-yn-hpq"/>
                     <constraint firstItem="vZY-5U-pDh" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="QSk-Iv-psk"/>
                     <constraint firstItem="vZY-5U-pDh" firstAttribute="leading" secondItem="bnv-4Y-MwR" secondAttribute="trailing" constant="24" id="cOw-sB-GQP"/>
                     <constraint firstItem="bnv-4Y-MwR" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="cvq-Kl-TGU"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <color key="backgroundColor" name="Background"/>
+            <color key="tintColor" name="Text"/>
             <connections>
                 <outlet property="descriptionLabel" destination="vZY-5U-pDh" id="paj-Zj-jm2"/>
                 <outlet property="photo" destination="bnv-4Y-MwR" id="myS-C2-Crn"/>
@@ -46,4 +57,12 @@
             <point key="canvasLocation" x="153.43511450381678" y="73.943661971830991"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <namedColor name="Background">
+            <color red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Text">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>
